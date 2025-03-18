@@ -2,7 +2,6 @@
 //  SelectedImageView.swift
 //  Munch
 //
-//  Created by elizabeth song on 10/19/23.
 //
 // SelectedImageView.swift
 

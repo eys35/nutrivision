@@ -2,7 +2,6 @@
 //  CameraView.swift
 //  Munch
 //
-//  Created by elizabeth song on 10/14/23.
 //live photo capture
 
 import SwiftUI

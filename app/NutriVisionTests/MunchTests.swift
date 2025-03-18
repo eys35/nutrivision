@@ -2,7 +2,6 @@
 //  MunchTests.swift
 //  MunchTests
 //
-//  Created by Bryant Park on 9/30/23.
 //
 
 import XCTest

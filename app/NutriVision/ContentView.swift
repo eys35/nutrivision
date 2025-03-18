@@ -2,8 +2,6 @@
 //  ContentView.swift
 //  Munch
 //
-//  Created by Bryant Park on 9/30/23.
-
 
 // r: 252 g: 228 b: 217
 

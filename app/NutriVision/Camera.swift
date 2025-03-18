@@ -2,7 +2,6 @@
 //  Camera.swift
 //  Munch
 //
-//  Created by elizabeth song on 10/14/23.
 //
 
 import SwiftUI
