@@ -2,7 +2,6 @@
 //  CustomErrors.swift
 //  Planner Application Draft
 //
-//  Created by Koji Kimura on 1/21/22.
 //
 
 import Foundation

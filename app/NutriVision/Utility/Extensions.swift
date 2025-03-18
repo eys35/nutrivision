@@ -2,7 +2,6 @@
 //  Extensions.swift
 //  Munch
 //
-//  Created by Koji Kimura on 10/28/23.
 //
 
 import Foundation

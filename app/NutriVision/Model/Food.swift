@@ -2,7 +2,6 @@
 //  File.swift
 //  Munch
 //
-//  Created by Koji Kimura on 10/29/23.
 //
 
 import Foundation
