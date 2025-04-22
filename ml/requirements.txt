@@ -1,18 +1,29 @@
 certifi==2025.1.31
 charset-normalizer==3.4.1
-clip @ git+https://github.com/openai/CLIP.git
+clip @ git+https://github.com/openai/CLIP.git@dcba3cb2e2827b402d2701e7e1c7d9fed8a20ef1
+contourpy==1.3.2
+cycler==0.12.1
 filelock==3.18.0
+fonttools==4.57.0
 fsspec==2025.3.2
 ftfy==6.3.1
 idna==3.4
 Jinja2==3.1.6
+kiwisolver==1.4.8
 MarkupSafe==3.0.2
+matplotlib==3.10.1
 mpmath==1.3.0
 networkx==3.2
 numpy==1.26.4
-Pillow==10.3.0
+opencv-python==4.11.0.86
+packaging==24.2
+pillow==10.3.0
+pyparsing==3.2.3
+python-dateutil==2.9.0.post0
 regex==2023.12.25
 requests==2.32.3
+segment_anything @ git+https://github.com/facebookresearch/segment-anything.git@dca509fe793f601edb92606367a655c15ac00fdf
+six==1.17.0
 sympy==1.12
 torch==2.2.2
 torchvision==0.17.2
