@@ -3,6 +3,7 @@ from typing import List
 from PIL import Image
 import torch
 import clip
+from scipy import sparse
 import numpy as np
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 import matplotlib.pyplot as plt
@@ -91,6 +92,33 @@ def show_segments(image_pil: Image.Image, masks: list[dict]):
     plt.title("All Segments")
     plt.show()
 
+def filter_ingredients(candidates, PPMI, idx_of,
+                       thresh=0.5, min_links=1):
+    """
+    Keep only ingredients that have *at least `min_links`* other
+    candidates with PPMI ≥ `thresh`.
+    """
+    keep = []
+    for ing in candidates:
+        i = idx_of.get(ing)
+        if i is None:                  # unseen ingredient
+            continue
+        # Slice the row and pick scores against the other candidates
+        partners = [idx_of[x] for x in candidates if x != ing and x in idx_of]
+        strong = (PPMI[i, partners] >= thresh).sum()
+        if strong >= min_links:
+            keep.append(ing)
+    return keep
+
+def pmi_matrix(C, eps=1e-9):
+    N = C.sum()
+    freq = C.sum(axis=1, keepdims=True)               # column-vector
+    expected = freq @ freq.T / N
+    with np.errstate(divide="ignore"):
+        pmi = np.log2((C + eps) / (expected + eps))
+    pmi[pmi < 0] = 0                                   # positive PMI (PPMI)
+    return pmi
+    
 
 
 def process_image(img_path):
@@ -98,7 +126,7 @@ def process_image(img_path):
 
     segments = get_segments(im)
     # show_segments(im, segments)  # for testing
-
+    print("got segments")
     if CACHE_PKL.exists():
         with CACHE_PKL.open("rb") as f:
             labels = pickle.load(f)
@@ -109,11 +137,20 @@ def process_image(img_path):
 
     img_np = np.array(im)
     ingredients = get_ingredients(img_np, segments, labels)
+    print("got ingredients")
+    mat_csr = sparse.load_npz("cooc.npz")
+    print("decompressed matrix")
+    PPMI = pmi_matrix(mat_csr.astype(float))
+    print("made pmi matrix")
 
-    return ingredients
+    idx_of = {ing: i for i, ing in enumerate(ingredients)}
 
-    # print("Predicted ingredients:")
-    # for label in ingredients:
-    #     print(f"  - {label}")
+    filtered_ingredients = filter_ingredients(ingredients, PPMI, idx_of, thresh = 0.5, min_links=1)
+    
+    print("Predicted ingredients:")
+    for label in ingredients:
+        print(f"  - {label}")
+    
+    return filtered_ingredients
 
 process_image('test.jpeg')

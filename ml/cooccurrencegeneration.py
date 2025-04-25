@@ -13,13 +13,9 @@ from collections import defaultdict
 import numpy as np
 import pandas as pd
 
-# ------------ 1.  Load your data  -------------------------------------------
 with open("train.json", "r", encoding="utf-8") as f:
-    # If your file is a list: data = json.load(f)
-    # If it is an object keyed by IDs (what you showed):  use .values()
     data = json.load(f)
 
-# ------------ 2.  Discover all unique ingredients  --------------------------
 ingredient_to_idx = {}
 for recipe in data:
     for raw in recipe["ingredients"]:
@@ -30,31 +26,20 @@ for recipe in data:
 n = len(ingredient_to_idx)
 matrix = np.zeros((n, n), dtype=int)
 
-# ------------ 3.  Update co-occurrence counts  ------------------------------
 for recipe in data:
     ing_set = {raw.strip().lower() for raw in recipe["ingredients"]}
 
-    # Count every unordered pair once per recipe
     for a, b in itertools.combinations(ing_set, 2):
         i, j = ingredient_to_idx[a], ingredient_to_idx[b]
         matrix[i, j] += 1
         matrix[j, i] += 1
 
-    # Optional: store recipe counts on the diagonal
     for ing in ing_set:
         idx = ingredient_to_idx[ing]
-        matrix[idx, idx] += 1          # drop this loop if you want zeros on the diagonal
+        matrix[idx, idx] += 1 
 
-# if dataframe takes too much memory (it does):
 from scipy import sparse
 import numpy as np
 
-# matrix is the NumPy array you built earlier
-mat_csr = sparse.csr_matrix(matrix)          # compresses rows & drops zero
+mat_csr = sparse.csr_matrix(matrix)  
 sparse.save_npz("cooc.npz", mat_csr, compressed=True)
-
-#uncompress w/ mat_csr = sparse.load_npz("cooc.npz")
-
-# Show the first few rows
-print(len(df))
-df.to_csv("co_occurrence.csv")
