@@ -45,13 +45,6 @@ for recipe in data:
         idx = ingredient_to_idx[ing]
         matrix[idx, idx] += 1          # drop this loop if you want zeros on the diagonal
 
-# ------------ 4.  Wrap in a nice DataFrame  ---------------------------------
-df = pd.DataFrame(
-    matrix,
-    index=ingredient_to_idx.keys(),
-    columns=ingredient_to_idx.keys()
-)
-
 # if dataframe takes too much memory (it does):
 from scipy import sparse
 import numpy as np

@@ -6,9 +6,24 @@ import clip
 import numpy as np
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 import matplotlib.pyplot as plt
+import json, pickle, os
+from pathlib import Path
 
-
+SRC_JSON   = Path("train.json")       
+CACHE_PKL  = Path("labels.pkl") 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+
+
+def get_labels():
+    with SRC_JSON.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    idx = {}
+    for recipe in data:
+        for raw in recipe["ingredients"]:
+            ing = raw.strip().lower()
+            idx.setdefault(ing, len(idx)) 
+    return idx
 
 
 def get_segments(pil_img: Image.Image) -> list[dict]:
@@ -51,7 +66,7 @@ def get_ingredients(img_np, segments: list[dict], labels: List[str]) -> List[str
     seen_labels = set()
 
     for i, seg in enumerate(segments):
-        print("getting labels for image ", i)
+        # print("getting labels for image ", i)
         mask = seg["segmentation"]
         masked_img_np = img_np.copy()
         masked_img_np[~mask] = 0
@@ -63,7 +78,6 @@ def get_ingredients(img_np, segments: list[dict], labels: List[str]) -> List[str
     return list(seen_labels)
 
 
-# for testing
 def show_segments(image_pil: Image.Image, masks: list[dict]):
     image_np = np.array(image_pil)
 
@@ -78,29 +92,28 @@ def show_segments(image_pil: Image.Image, masks: list[dict]):
     plt.show()
 
 
-if __name__ == "__main__":
-    img_path = sys.argv[1]
+
+def process_image(img_path):
     im = Image.open(img_path).convert("RGB")
 
     segments = get_segments(im)
-    show_segments(im, segments)  # for testing
+    # show_segments(im, segments)  # for testing
 
-    print("Number of segments: ", len(segments))
-
-    labels = [
-        "egg",
-        "flour",
-        "milk",
-        "sugar",
-        "chocolate chips",
-        "vanilla extract",
-        "brown sugar",
-        "butter",
-    ]
+    if CACHE_PKL.exists():
+        with CACHE_PKL.open("rb") as f:
+            labels = pickle.load(f)
+    else:
+        labels = get_labels()
+        with CACHE_PKL.open("wb") as f:
+            pickle.dump(labels, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     img_np = np.array(im)
     ingredients = get_ingredients(img_np, segments, labels)
 
-    print("Predicted ingredients:")
-    for label in ingredients:
-        print(f"  - {label}")
+    return ingredients
+
+    # print("Predicted ingredients:")
+    # for label in ingredients:
+    #     print(f"  - {label}")
+
+process_image('test.jpeg')
