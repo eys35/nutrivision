@@ -30,6 +30,7 @@ struct UserData {
 
     struct ContentView: View {
         @State private var path = NavigationPath()
+        @State private var showPastRecipes = false
         @State private var pastRecipes: [RecipeSuggestion] = []
         @State private var showView : Bool = false
         @State private var showImagePicker: Bool = false
@@ -64,7 +65,7 @@ struct UserData {
                     Spacer ()
                     Image("LogoWithBg")
                         .resizable()
-                        .frame(width: 300, height: 75)
+                        .frame(width: 300, height: 185)
                         .scaledToFit()
                         .aspectRatio(contentMode: .fit)
                         .padding(.vertical)
@@ -116,13 +117,7 @@ struct UserData {
                                            }
                     }
                     Spacer()
-//                    Button("Past Recipes") {
-//                        // You could show a sheet or navigate to a PastRecipesView
-//                        showPastRecipes = true
-//                    }
-//                    .sheet(isPresented: $showPastRecipes) {
-//                        PastRecipesView(recipes: pastRecipes)
-//                    }
+                    
                 HStack {
                     Button(action: {
                         self.showView.toggle()
@@ -224,9 +219,25 @@ struct UserData {
                             .padding(.horizontal)
                         
                         }
+                        
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button(action: {
+                                showPastRecipes = true
+                            }) {
+                                Image(systemName: "clock.arrow.circlepath") // ⏳ history icon
+                                    .imageScale(.large)
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $showPastRecipes) {
+                        PastRecipesView(recipes: pastRecipes)
                     }
                 }
+                    
             }
+                
         }
     }
 }
