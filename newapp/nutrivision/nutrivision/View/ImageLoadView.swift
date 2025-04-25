@@ -10,12 +10,13 @@ struct ImageLoadViewWrapper: UIViewControllerRepresentable {
     @Binding var isShowingImageLoadView: Bool
     var selectedImage: Image?
     var userData: UserData?
+    var macrosVM: MacrosVM
 
     func makeUIViewController(context: Context) -> UIViewController {
         guard isShowingImageLoadView, let selectedImage = selectedImage else {
             return UIViewController()
         }
-        let imageLoadView = ImageLoadView(selectedImage: selectedImage, userData: userData)
+        let imageLoadView = ImageLoadView(selectedImage: selectedImage, userData: userData, macrosVM: macrosVM)
         return UIHostingController(rootView: imageLoadView)
     }
 
@@ -26,9 +27,9 @@ struct ImageLoadViewWrapper: UIViewControllerRepresentable {
 
 
 struct ImageLoadView: View {
-    
     var selectedImage: Image
     var userData: UserData?
+    var macrosVM: MacrosVM
     @StateObject private var viewModel = ImageLoadVM()
     @State private var isLoading: Bool = false
     @State private var triggerError: Bool = false
@@ -69,12 +70,18 @@ struct ImageLoadView: View {
                                  
         
                 
-                    if (viewModel.isReady) {
-                        NavigationLink(destination: MacrosView(food_id: viewModel.food_id).navigationBarBackButtonHidden(true)) {
+                    if viewModel.isReady, let userData = userData {
+                        NavigationLink(
+                            destination: MacrosView(
+                                labels: viewModel.detectedIngredients,
+                                userData: userData
+                            )
+                            .navigationBarBackButtonHidden(true)
+                        ) {
                             Text("CONTINUE")
                                 .padding()
-                                .background(Color(red: 0.8745098039215686, green: 0.34509803921568627, blue: 0.35294117647058826))
-                                .foregroundColor(Color.white)
+                                .background(Color(red: 0.8745, green: 0.3451, blue: 0.3529))
+                                .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
                     }
@@ -107,22 +114,28 @@ struct ImageLoadView: View {
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
-            }.onAppear{
+            }.onAppear {
                 if let userData = userData {
-                    viewModel.postImage(img: selectedImage, userData: userData)
+                    print("📤 Uploading image for segmentation and analysis...")
+                    viewModel.postImage(
+                        img: selectedImage,
+                        userData: userData, macrosVM: macrosVM,
+                        purpose: "segment_and_analyze"
+                    )
+                    isLoading = true
                 } else {
                     print("⚠️ Warning: userData was nil on ImageLoadView.onAppear")
                 }
             }
         }
     }
-    
-    
-    struct ImageLoadView_Previews: PreviewProvider {
-        static var previews: some View {
-            ImageLoadView(selectedImage: Image("Logo"))
-        }
-    }
+//    
+//    
+//    struct ImageLoadView_Previews: PreviewProvider {
+//        static var previews: some View {
+//            ImageLoadView(selectedImage: Image("Logo"), macrosVM: MacrosVM())
+//        }
+//    }
 }
 
 extension View {
@@ -167,6 +180,6 @@ struct ImageLoadView_Previews: PreviewProvider {
                             isAllergicToShellfish: false, isAllergicToGluten: false,
                             isAllergicToEggs: false, isAllergicToTreeNuts: false,
                             isAllergicToWheat: false, isAllergicToSoy: false, isAllergicToFish: false
-                        ))
+                        ), macrosVM: MacrosVM())
       }
   }

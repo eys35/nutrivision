@@ -17,6 +17,7 @@ let URL_NUTRIENTS = "https://api.edamam.com/api/nutrition-data"
 
 
 class APIServices {
+    
     static let shared = APIServices()
     
     func loadResources<T:Decodable>(from path: String, onSuccess: @escaping (T)->Void, onError: @escaping (APIError)-> Void) {
@@ -81,83 +82,89 @@ class APIServices {
         }
         
     }
-//    
-//    func segmentAndDetectIngredients(image: Image, completion: @escaping (Result<[String], Error>) -> Void) {
-//        // Convert SwiftUI Image to UIImage
-//        guard let uiImage = image.asUIImage(),
-//              let imageData = uiImage.jpegData(compressionQuality: 0.8) else {
-//            completion(.failure(NSError(domain: "ImageConversion", code: 0, userInfo: nil)))
-//            return
-//        }
-//        
-//        // Prepare URL and request
-//        guard let url = URL(string: "https://your-backend.com/api/segment-detect") else {
-//            completion(.failure(NSError(domain: "BadURL", code: 0, userInfo: nil)))
-//            return
-//        }
-//        
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//        
-//        let boundary = UUID().uuidString
-//        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-//        
-//        var body = Data()
-//        body.appendMultipartData(fieldName: "image", fileName: "image.jpg", mimeType: "image/jpeg", fileData: imageData, boundary: boundary)
-//        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-//        
-//        request.httpBody = body
-//        
-//        // Send request
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            if let error = error {
-//                completion(.failure(error))
-//                return
-//            }
-//            
-//            guard let data = data else {
-//                completion(.failure(NSError(domain: "NoData", code: 0, userInfo: nil)))
-//                return
-//            }
-//            
-//            do {
-//                let decoded = try JSONDecoder().decode([String].self, from: data)
-//                completion(.success(decoded))
-//            } catch {
-//                completion(.failure(error))
-//            }
-//        }.resume()
-//    }
-//    
-//    // MARK: - GPT Recipe Generation
-//    func generateRecipes(ingredients: [String], allergies: [String], onSuccess: @escaping ([String]) -> Void) {
-//        let prompt = """
-//            Given the following ingredients: \(ingredients.joined(separator: ", ")) and these allergies: \(allergies.joined(separator: ", ")), generate 3 allergy-safe recipes.
-//            """
-//        
-//        guard let url = URL(string: "https://your-backend.com/api/gpt-recipes") else { return }
-//        
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        
-//        let bodyDict: [String: Any] = [
-//            "prompt": prompt
-//        ]
-//        
-//        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyDict)
-//        
-//        URLSession.shared.dataTask(with: request) { data, _, _ in
-//            if let data = data {
-//                do {
-//                    let result = try JSONDecoder().decode([String].self, from: data)
-//                    onSuccess(result)
-//                } catch {
-//                    print("Failed to decode recipe response: \(error)")
-//                }
-//            }
-//        }.resume()
-//    }
+    
+    func segmentAndDetectIngredients(image: Image, purpose: String, completion: @escaping (Result<[String], Error>) -> Void) {
+        // Convert SwiftUI Image to UIImage
+            let uiImage = image.asUIImage()
+            guard let imageData = uiImage.jpegData(compressionQuality: 0.8),
+                  let url = URL(string: "\(LOCALHOST_URL_BASE)/segment_detect") else {
+                completion(.failure(NSError(domain: "ImageConversionOrURL", code: 0, userInfo: nil)))
+                return
+            }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+
+            let boundary = UUID().uuidString
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+            var body = Data()
+
+            // Add purpose
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"purpose\"\r\n\r\n".data(using: .utf8)!)
+            body.append("\(purpose)\r\n".data(using: .utf8)!)
+
+            // Add image
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg\"\r\n".data(using: .utf8)!)
+            body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+            body.append(imageData)
+            body.append("\r\n".data(using: .utf8)!)
+
+            // Closing boundary
+            body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+            request.httpBody = body
+
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                guard let data = data else {
+                    completion(.failure(NSError(domain: "NoData", code: 0, userInfo: nil)))
+                    return
+                }
+
+                do {
+                    let decoded = try JSONDecoder().decode([String].self, from: data)
+                    completion(.success(decoded))
+                } catch {
+                    completion(.failure(error))
+                }
+            }.resume()
+        }
+    
+    // MARK: - GPT Recipe Generation
+    func generateRecipes(ingredients: [String], allergies: [String], onSuccess: @escaping ([String]) -> Void) {
+        let prompt = """
+            Given the following ingredients: \(ingredients.joined(separator: ", ")) and these allergies: \(allergies.joined(separator: ", ")), generate 3 allergy-safe recipes.
+            """
+        
+        guard let url = URL(string: "https://your-backend.com/api/gpt-recipes") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let bodyDict: [String: Any] = [
+            "prompt": prompt
+        ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyDict)
+        
+        URLSession.shared.dataTask(with: request) { data, _, _ in
+            if let data = data {
+                do {
+                    let result = try JSONDecoder().decode([String].self, from: data)
+                    onSuccess(result)
+                } catch {
+                    print("Failed to decode recipe response: \(error)")
+                }
+            }
+        }.resume()
+    }
 
     
     func loadNutrients(food: String, onSuccess: @escaping (Nutrients)->Void){
@@ -168,12 +175,30 @@ class APIServices {
         
     }
     
-    func runModel(food_id: String, onSuccess: @escaping (Food_Name)->Void){
-        
-        loadResources(from: "\(LOCALHOST_URL_BASE)\(ENDPOINT_MODEL)/\(food_id)", onSuccess: onSuccess) { error in
-            debugPrint(error.errorMessage)
-        }
-        
+    func runModel(labels: [String], allergies: [String], onSuccess: @escaping (RecipeSuggestion) -> Void) {
+        guard let url = URL(string: "\(LOCALHOST_URL_BASE)/run_model") else { return }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let body: [String: Any] = [
+            "labels": labels,
+            "allergies": allergies
+        ]
+
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else { return }
+
+            do {
+                let decoded = try JSONDecoder().decode(RecipeSuggestion.self, from: data)
+                onSuccess(decoded)
+            } catch {
+                print("❌ Error decoding RecipeSuggestion: \(error)")
+            }
+        }.resume()
     }
     
     func postImage(image: Image, onSuccess: @escaping (Food_Id)->Void){

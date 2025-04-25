@@ -7,7 +7,8 @@
 import SwiftUI
 
 struct MacrosView: View {
-    let food_id: String
+    let labels: [String]
+    let userData: UserData
     
     @StateObject private var viewModel = MacrosVM()
     @State private var isBouncing = false
@@ -24,20 +25,14 @@ struct MacrosView: View {
                     .frame(width: 150, height: 37.5)
                     .scaledToFit()
                     .aspectRatio(contentMode: .fit)
-                    .padding(.top)
-                    .padding(.top)
-                    .padding(.top)
-                    .padding(.top)
-                    .padding(.top)
+                    .padding(.top, 80)
                     .padding(.vertical)
                 
                 Spacer()
 
                 Text("Loading...")
                     .font(.title)
-                    .padding(.bottom)
-                    .padding(.bottom)
-                    .padding(.bottom)
+                    .padding(.bottom, 64)
                     
                 HStack {
                     Group {
@@ -45,14 +40,7 @@ struct MacrosView: View {
                             .resizable()
                             .frame(width: 40, height: 45, alignment: .leading)
                             .padding(.horizontal)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
+                            .padding(.bottom, 64)
                             .scaleEffect(isBouncing ? 1.2 : 1.0)
                             .onAppear() {
                                 withAnimation(Animation.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) {
@@ -64,14 +52,7 @@ struct MacrosView: View {
                             .resizable()
                             .frame(width: 40, height: 45, alignment: .center)
                             .padding(.horizontal)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
+                            .padding(.bottom, 64)
                             .aspectRatio(contentMode: .fit)
                             .scaleEffect(isBouncing ? 1.2 : 1.0)
                             .onAppear() {
@@ -84,14 +65,7 @@ struct MacrosView: View {
                             .resizable()
                             .frame(width: 40, height: 45)
                             .padding(.horizontal)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
+                            .padding(.bottom, 64)
                             .aspectRatio(contentMode: .fit)
                             .frame(alignment: Alignment.trailing)
                             .scaleEffect(isBouncing ? 1.2 : 1.0)
@@ -107,8 +81,14 @@ struct MacrosView: View {
 //
 //                }
                 Spacer()
-                if (viewModel.isReady){
-                    NavigationLink(destination: NutrientsView(food: viewModel.food_name).navigationBarBackButtonHidden(true)) {
+                if (viewModel.isReady) {
+                    NavigationLink(
+                        destination: NutrientsView(
+                            recipe: viewModel.recipeSuggestion,
+                            food: viewModel.food_name
+                        )
+                        .navigationBarBackButtonHidden(false)
+                    ) {
                         Text("CONTINUE")
                             .padding()
                             .background(Color(red: 0.8745098039215686, green: 0.34509803921568627, blue: 0.35294117647058826))
@@ -116,17 +96,35 @@ struct MacrosView: View {
                             .cornerRadius(10)
                     }
                 }
-            }.onLoad(perform: {() in viewModel.runModel(food_id: food_id)
-            })
+            }.onLoad {
+                viewModel.runModel(labels: labels, userData: userData)
+            }
             
         }
       
        
     }
 }
-    struct MacrosView_Previews: PreviewProvider {
-        static var previews: some View {
-            MacrosView(food_id: "6655f517-4cbd-428f-a057-4878dc89ace9")
-        }
+struct MacrosView_Previews: PreviewProvider {
+    static var previews: some View {
+        MacrosView(
+            labels: ["apple", "egg", "bread"],
+            userData: UserData(
+                age: "25",
+                weight: "140",
+                height: "170",
+                gender: "Female",
+                isAllergicToPeanuts: false,
+                isAllergicToDairy: true,
+                isAllergicToShellfish: false,
+                isAllergicToGluten: false,
+                isAllergicToEggs: false,
+                isAllergicToTreeNuts: false,
+                isAllergicToWheat: false,
+                isAllergicToSoy: false,
+                isAllergicToFish: false
+            )
+        )
     }
+}
 

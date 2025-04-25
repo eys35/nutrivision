@@ -10,6 +10,7 @@
 import SwiftUI
 import Combine
 
+
 struct UserData {
     var age: String
     var weight: String
@@ -28,7 +29,8 @@ struct UserData {
 }
 
     struct ContentView: View {
-        
+        @State private var path = NavigationPath()
+        @State private var pastRecipes: [RecipeSuggestion] = []
         @State private var showView : Bool = false
         @State private var showImagePicker: Bool = false
         @State private var image: Image? = nil
@@ -100,10 +102,10 @@ struct UserData {
                             CameraView(selectedImage: self.$selectedImage, isShowingPopup: self.$isShowingPopup)
                         }
                         .navigationDestination(isPresented: $isShowingImageLoadView) {
-                            ImageLoadViewWrapper(isShowingImageLoadView: $isShowingImageLoadView, selectedImage: self.selectedImage)
+                            ImageLoadViewWrapper(isShowingImageLoadView: $isShowingImageLoadView, selectedImage: self.selectedImage, macrosVM: MacrosVM())
                         }
                     if let selectedImage = self.selectedImage {
-                        NavigationLink(destination: ImageLoadView(selectedImage: selectedImage, userData: userData)) {
+                        NavigationLink(destination: ImageLoadView(selectedImage: selectedImage, userData: userData, macrosVM: MacrosVM())) {
                                                Image("next")
                                                    .resizable()
                                                    .padding(.top)
@@ -112,22 +114,15 @@ struct UserData {
                                                    .scaledToFit()
                                                
                                            }
-//                    if let selectedImage = self.selectedImage {
-//                        NavigationLink(destination: ImageLoadView(selectedImage: selectedImage), tag: 1, selection: $action) {
-//                            EmptyView()
-//                        }.navigationBarBackButtonHidden(true)
-                        
-                        
-//                        NavigationLink(destination: ImageLoadView(selectedImage: selectedImage)) {
-//                            Image("next")
-//                                .resizable()
-//                                .padding(.top)
-//                                .padding(.top)
-//                                .frame(width: 130, height: 90)
-//                                .scaledToFit()
-//                        }
                     }
                     Spacer()
+//                    Button("Past Recipes") {
+//                        // You could show a sheet or navigate to a PastRecipesView
+//                        showPastRecipes = true
+//                    }
+//                    .sheet(isPresented: $showPastRecipes) {
+//                        PastRecipesView(recipes: pastRecipes)
+//                    }
                 HStack {
                     Button(action: {
                         self.showView.toggle()

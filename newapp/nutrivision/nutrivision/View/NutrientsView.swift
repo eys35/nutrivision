@@ -8,17 +8,17 @@ import Charts
 
 import SwiftUI
 
-struct RecipeSuggestion: Identifiable {
-    var id = UUID()
-    var name: String
-    var ingredientsYouHave: [String]
-    var ingredientsToBuy: [String]
-    var userAllergies: [String]
+struct RecipeSuggestion: Codable {
+    let name: String
+    let ingredientsYouHave: [String]
+    let ingredientsToBuy: [String]
+    let userAllergies: [String]
 }
 
 struct NutrientsView: View {
     let recipe: RecipeSuggestion
     let food: String
+    @Environment(\.dismiss) var dismiss
 
 
     var body: some View {
@@ -55,6 +55,7 @@ struct NutrientsView: View {
                     }
                 }
             }
+            
 
             Spacer()
         }
