@@ -86,38 +86,18 @@ SAM_MASKGEN = SamAutomaticMaskGenerator(
 # ============================================================
 
 def _parse_labels() -> List[str]:
-    """Extract unique, lower‑cased ingredient names from `train.json`."""
-    with SRC_JSON.open("r", encoding="utf-8") as fh:
-        data = json.load(fh)
-    idx = {}
-    for recipe in data:
-        for raw in recipe.get("ingredients", []):
-            ing = raw.strip().lower()
-            idx.setdefault(ing, len(idx))
-    return list(idx.keys())
-
-# --- load / upgrade the cached label list -------------------
-if CACHE_PKL.exists():
-    loaded = pickle.loads(CACHE_PKL.read_bytes())
-
-    # Legacy support: the very first version stored a **dict** name→index.
-    if isinstance(loaded, dict):
-        print("[init] detected legacy label cache (dict) → upgrading to list …")
-        tmp = [None] * (max(loaded.values()) + 1)
-        for name, pos in loaded.items():
-            # Make sure we don’t accidentally extend beyond the declared size
-            if pos >= len(tmp):
-                tmp.extend([None] * (pos - len(tmp) + 1))
-            tmp[pos] = name
-        LABELS: List[str] = tmp
-        # overwrite with the new, canonical format
-        CACHE_PKL.write_bytes(pickle.dumps(LABELS, protocol=pickle.HIGHEST_PROTOCOL))
-        print("[init] label cache upgraded and re‑saved")
-    else:
-        LABELS: List[str] = loaded  # already the right format
-else:
-    LABELS = _parse_labels()
-    CACHE_PKL.write_bytes(pickle.dumps(LABELS, protocol=pickle.HIGHEST_PROTOCOL))
+    # """Extract unique, lower‑cased ingredient names from `train.json`."""
+    # with SRC_JSON.open("r", encoding="utf-8") as fh:
+    #     data = json.load(fh)
+    # idx = {}
+    # for recipe in data:
+    #     for raw in recipe.get("ingredients", []):
+    #         ing = raw.strip().lower()
+    #         idx.setdefault(ing, len(idx))
+    with open('ingredients_list.txt', 'r', encoding='utf-8') as file:
+        return [line.strip().lower() for line in file.readlines()]
+    
+LABELS = _parse_labels()
 print(f"[init] {len(LABELS):,} unique labels")
 
 # ============================================================
