@@ -1,156 +1,262 @@
 import sys
-from typing import List
+import json
+import pickle
+from pathlib import Path
+from typing import List, Set
+
+import numpy as np
 from PIL import Image
 import torch
 import clip
 from scipy import sparse
-import numpy as np
-from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 import matplotlib.pyplot as plt
-import json, pickle, os
-from pathlib import Path
+from contextlib import nullcontext
+from tqdm import tqdm
 
-SRC_JSON   = Path("train.json")       
-CACHE_PKL  = Path("labels.pkl") 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 
+"""
+Image‑labeling pipeline that combines:
+  • Segment‑Anything (SAM) for mask proposal
+  • OpenAI CLIP (ViT‑B/32) for zero‑shot label matching
+  • Co‑occurrence PMI post‑filtering
 
-def get_labels():
-    with SRC_JSON.open("r", encoding="utf-8") as f:
-        data = json.load(f)
+Works on CUDA, Apple‑Silicon (MPS) or CPU‐only boxes.
+For Macs running on MPS we keep CLIP on the GPU but force SAM to CPU to avoid
+float64‑dtype limitations inside the automatic mask generator.
+"""
 
+# ============================================================
+#                         CONFIG                              
+# ============================================================
+SRC_JSON       = Path("train.json")          # ingredient JSON
+CACHE_PKL      = Path("labels.pkl")          # cached label list (always a **list**, never a dict from now on!)
+TXT_EMB_NPY    = Path("label_emb.npy")       # cached CLIP text embeddings
+COOC_NPZ       = Path("cooc.npz")            # sparse co‑occurrence counts
+PPMI_NPY       = Path("ppmi.npy")            # cached PMI matrix
+SAM_CHECKPOINT = "sam_vit_b_01ec64.pth"      # SAM checkpoint
+MODEL_TYPE     = "vit_b"                     # SAM variant
+
+# ============================================================
+#                  DEVICE SELECTION (CLIP)                    
+# ============================================================
+if torch.cuda.is_available():
+    DEVICE = "cuda"
+elif torch.backends.mps.is_available():
+    DEVICE = "mps"
+else:
+    DEVICE = "cpu"
+print(f"[init] main device: {DEVICE}")
+
+torch.set_float32_matmul_precision("high")
+
+# autocast helper – fp16 only on CUDA
+if DEVICE == "cuda":
+    def _autocast():
+        return torch.autocast(device_type="cuda", dtype=torch.float16)
+else:
+    def _autocast():
+        return nullcontext()
+
+# ============================================================
+#                  LOAD CLIP  (zero‑shot)                     
+# ============================================================
+print("[init] loading CLIP ViT‑B/32 …")
+CLIP_MODEL, CLIP_PREPROCESS = clip.load("ViT-B/32", device=DEVICE, jit=False)
+CLIP_MODEL.eval(); CLIP_MODEL.requires_grad_(False)
+
+# ============================================================
+#              LOAD SAM  (mask generation)                    
+# ============================================================
+# SAM uses some float64 intermediate tensors → MPS kernel crash.
+# Easiest workaround: keep SAM on CPU when running on Apple Silicon.
+SAM_DEVICE = "cpu" if DEVICE == "mps" else DEVICE
+print(f"[init] loading SAM ({SAM_DEVICE}) …")
+SAM_MODEL = sam_model_registry[MODEL_TYPE](checkpoint=SAM_CHECKPOINT).to(SAM_DEVICE)
+SAM_MASKGEN = SamAutomaticMaskGenerator(
+    model=SAM_MODEL,
+    points_per_side=16,
+    pred_iou_thresh=0.88,
+    stability_score_thresh=0.92,
+    min_mask_region_area=4_000,
+)
+
+# ============================================================
+#                        LABELS                               
+# ============================================================
+
+def _parse_labels() -> List[str]:
+    """Extract unique, lower‑cased ingredient names from `train.json`."""
+    with SRC_JSON.open("r", encoding="utf-8") as fh:
+        data = json.load(fh)
     idx = {}
     for recipe in data:
-        for raw in recipe["ingredients"]:
+        for raw in recipe.get("ingredients", []):
             ing = raw.strip().lower()
-            idx.setdefault(ing, len(idx)) 
-    return idx
+            idx.setdefault(ing, len(idx))
+    return list(idx.keys())
 
+# --- load / upgrade the cached label list -------------------
+if CACHE_PKL.exists():
+    loaded = pickle.loads(CACHE_PKL.read_bytes())
 
-def get_segments(pil_img: Image.Image) -> list[dict]:
-    model_type = "vit_b"
-    sam_checkpoint = "sam_vit_b_01ec64.pth"
-
-    image_np = np.array(pil_img)
-
-    sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
-    sam.to(device)
-
-    # mask_generator = SamAutomaticMaskGenerator(sam)
-    mask_generator = SamAutomaticMaskGenerator(
-        model=sam,
-        points_per_side=16,
-        pred_iou_thresh=0.88,
-        stability_score_thresh=0.92,
-        min_mask_region_area=4000,
-    )
-
-    masks = mask_generator.generate(image_np)
-    return masks
-
-
-def classify_img(pil_img: Image.Image, labels: List[str]) -> str:
-    model, preprocess = clip.load("ViT-B/32", device=device)
-
-    image = preprocess(pil_img).unsqueeze(0).to(device)
-    text = clip.tokenize(labels).to(device)
-
-    with torch.no_grad():
-        logits_per_image, _ = model(image, text)
-        probs = logits_per_image.softmax(dim=-1).cpu().numpy()
-
-    return labels[np.argmax(probs)]
-
-
-def get_ingredients(img_np, segments: list[dict], labels: List[str]) -> List[str]:
-
-    seen_labels = set()
-
-    for i, seg in enumerate(segments):
-        # print("getting labels for image ", i)
-        mask = seg["segmentation"]
-        masked_img_np = img_np.copy()
-        masked_img_np[~mask] = 0
-
-        masked_pil = Image.fromarray(masked_img_np)
-        label = classify_img(masked_pil, labels)
-        seen_labels.add(label)
-
-    return list(seen_labels)
-
-
-def show_segments(image_pil: Image.Image, masks: list[dict]):
-    image_np = np.array(image_pil)
-
-    plt.figure(figsize=(10, 10))
-    plt.imshow(image_np)
-
-    for mask in masks:
-        plt.contour(mask["segmentation"], colors="red", linewidths=0.5)
-
-    plt.axis("off")
-    plt.title("All Segments")
-    plt.show()
-
-def filter_ingredients(candidates, PPMI, idx_of,
-                       thresh=0.5, min_links=1):
-    """
-    Keep only ingredients that have *at least `min_links`* other
-    candidates with PPMI ≥ `thresh`.
-    """
-    keep = []
-    for ing in candidates:
-        i = idx_of.get(ing)
-        if i is None:                  # unseen ingredient
-            continue
-        # Slice the row and pick scores against the other candidates
-        partners = [idx_of[x] for x in candidates if x != ing and x in idx_of]
-        strong = (PPMI[i, partners] >= thresh).sum()
-        if strong >= min_links:
-            keep.append(ing)
-    return keep
-
-def pmi_matrix(C, eps=1e-9):
-    N = C.sum()
-    freq = C.sum(axis=1, keepdims=True)               # column-vector
-    expected = freq @ freq.T / N
-    with np.errstate(divide="ignore"):
-        pmi = np.log2((C + eps) / (expected + eps))
-    pmi[pmi < 0] = 0                                   # positive PMI (PPMI)
-    return pmi
-    
-
-
-def process_image(img_path):
-    im = Image.open(img_path).convert("RGB")
-
-    segments = get_segments(im)
-    # show_segments(im, segments)  # for testing
-    print("got segments")
-    if CACHE_PKL.exists():
-        with CACHE_PKL.open("rb") as f:
-            labels = pickle.load(f)
+    # Legacy support: the very first version stored a **dict** name→index.
+    if isinstance(loaded, dict):
+        print("[init] detected legacy label cache (dict) → upgrading to list …")
+        tmp = [None] * (max(loaded.values()) + 1)
+        for name, pos in loaded.items():
+            # Make sure we don’t accidentally extend beyond the declared size
+            if pos >= len(tmp):
+                tmp.extend([None] * (pos - len(tmp) + 1))
+            tmp[pos] = name
+        LABELS: List[str] = tmp
+        # overwrite with the new, canonical format
+        CACHE_PKL.write_bytes(pickle.dumps(LABELS, protocol=pickle.HIGHEST_PROTOCOL))
+        print("[init] label cache upgraded and re‑saved")
     else:
-        labels = get_labels()
-        with CACHE_PKL.open("wb") as f:
-            pickle.dump(labels, f, protocol=pickle.HIGHEST_PROTOCOL)
+        LABELS: List[str] = loaded  # already the right format
+else:
+    LABELS = _parse_labels()
+    CACHE_PKL.write_bytes(pickle.dumps(LABELS, protocol=pickle.HIGHEST_PROTOCOL))
+print(f"[init] {len(LABELS):,} unique labels")
 
-    img_np = np.array(im)
-    ingredients = get_ingredients(img_np, segments, labels)
-    print("got ingredients")
-    mat_csr = sparse.load_npz("cooc.npz")
-    print("decompressed matrix")
-    PPMI = pmi_matrix(mat_csr.astype(float))
-    print("made pmi matrix")
+# ============================================================
+#              TEXT EMBEDDINGS  (cache)                       
+# ============================================================
+# If the label list length changes (e.g. after an upgrade), we MUST re‑encode
+# the text prompts to keep everything in‑sync.
+need_reencode = True
+if TXT_EMB_NPY.exists():
+    try:
+        TEXT_EMB = torch.from_numpy(np.load(TXT_EMB_NPY)).float()
+        if TEXT_EMB.shape[0] == len(LABELS):
+            need_reencode = False
+            print("[init] loaded cached text embeddings")
+        else:
+            print("[init] cached text embeddings out‑of‑date (size mismatch) → rebuilding …")
+    except Exception:
+        print("[init] failed to load cached text embeddings → rebuilding …")
 
-    idx_of = {ing: i for i, ing in enumerate(ingredients)}
+if need_reencode:
+    print("[init] encoding label texts … (one‑off)")
+    batch = 256
+    vecs = []
+    for i in tqdm(range(0, len(LABELS), batch), "Encoding", leave=False):
+        toks = clip.tokenize(LABELS[i:i+batch]).to(DEVICE)
+        with _autocast():
+            e = CLIP_MODEL.encode_text(toks).float()
+        e /= e.norm(dim=-1, keepdim=True)
+        vecs.append(e.cpu())
+    TEXT_EMB = torch.cat(vecs)
+    np.save(TXT_EMB_NPY, TEXT_EMB.numpy())
+    print("[init] text embeddings cached → label_emb.npy")
 
-    filtered_ingredients = filter_ingredients(ingredients, PPMI, idx_of, thresh = 0.5, min_links=1)
-    
-    print("Predicted ingredients:")
-    for label in ingredients:
-        print(f"  - {label}")
-    
-    return filtered_ingredients
+# Fast name→index helper
+IDX_OF = {lbl: i for i, lbl in enumerate(LABELS)}
 
-process_image('test.jpeg')
+# ============================================================
+#                 PMI  (co‑occurrence filter)                 
+# ============================================================
+
+def _pmi_matrix(C: sparse.csr_matrix, eps: float = 1e-9) -> np.ndarray:
+    """Compute PPMI (positive PMI) matrix from raw co‑occurrence counts."""
+    N = C.sum()
+    freq = np.asarray(C.sum(axis=1)).astype(float).reshape(-1, 1)
+    expected = (freq @ freq.T) / N
+    with np.errstate(divide="ignore"):
+        pmi = np.log2((C.toarray() + eps) / (expected + eps))
+    pmi[pmi < 0] = 0  # keep only positive PMI
+    return pmi
+
+if PPMI_NPY.exists():
+    PPMI = np.load(PPMI_NPY)
+    print("[init] loaded cached PMI matrix")
+else:
+    print("[init] computing PMI matrix … (one‑off slow step)")
+    PPMI = _pmi_matrix(sparse.load_npz(COOC_NPZ).astype(float))
+    np.save(PPMI_NPY, PPMI)
+
+# ============================================================
+#                    CORE  FUNCTIONS                          
+# ============================================================
+
+def _segment(img: Image.Image):
+    """Return list of masks from SAM."""
+    return SAM_MASKGEN.generate(np.array(img))
+
+
+def _classify(img_np: np.ndarray, segs: List[dict]) -> Set[str]:
+    """Run CLIP on each SAM‑proposed crop and return the top label for each."""
+    if not segs:
+        return set()
+
+    crops = []
+    for s in tqdm(segs, desc="Masks", leave=False):
+        m = s["segmentation"]
+        crop = img_np.copy(); crop[~m] = 0
+        crops.append(CLIP_PREPROCESS(Image.fromarray(crop)))
+
+    imgs = torch.stack(crops).to(DEVICE)
+    with _autocast():
+        emb = CLIP_MODEL.encode_image(imgs).float().cpu()
+    emb /= emb.norm(dim=-1, keepdim=True)
+
+    idx = (emb @ TEXT_EMB.T).argmax(dim=-1).tolist()
+    return {LABELS[i] for i in idx}
+
+
+def _filter(cands: Set[str], thresh: float = 0.5, links: int = 1) -> List[str]:
+    """Simple PMI‑based post‑filtering: keep labels co‑occurring with ≥ `links` others."""
+    kept = []
+    idxs = [IDX_OF[c] for c in cands if c in IDX_OF]
+    for c in tqdm(cands, desc="PMI", leave=False):
+        i = IDX_OF.get(c)
+        if i is None:
+            continue
+        strong = (PPMI[i, idxs] >= thresh).sum() - 1  # exclude self
+        if strong >= links:
+            kept.append(c)
+    return kept
+
+# ============================================================
+#                     VISUALISATION                           
+# ============================================================
+
+def _show(image: Image.Image, masks: List[dict]):
+    plt.figure(figsize=(8, 8))
+    plt.imshow(np.array(image))
+    for m in masks:
+        plt.contour(m["segmentation"], colors="red", linewidths=0.4)
+    plt.axis("off"); plt.title("SAM segments"); plt.show()
+
+# ============================================================
+#                           MAIN                              
+# ============================================================
+
+def process_image(path: str, viz: bool = False):
+    print(f"[run] {path}")
+    img = Image.open(path).convert("RGB")
+
+    segs = _segment(img)
+    if viz:
+        _show(img, segs)
+
+    cand = _classify(np.array(img), segs)
+    print("    candidates:", sorted(cand))
+
+    final = _filter(cand)
+    print("    filtered:")
+    for f in final:
+        print(f"      • {f}")
+    return final
+
+# ============================================================
+#                    CLI ENTRY‑POINT                          
+# ============================================================
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python model.py <image_path> [--viz]")
+        sys.exit(1)
+    img_p = sys.argv[1]
+    viz = "--viz" in sys.argv
+    process_image(img_p, viz=viz)
