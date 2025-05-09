@@ -6,7 +6,7 @@ import io
 import requests
 import json
 import google.generativeai as genai
-LOCAL_API_KEY = "YOURLOCALAPIKEY"
+LOCAL_API_KEY = "AIzaSyC83mzBWpxdcFKIOtGOwkch6vOrh1_MYmY"
 genai.configure(api_key=LOCAL_API_KEY)
 app = Flask(__name__)
 
@@ -90,7 +90,7 @@ def run_model():
         #     else:
         #         ingredients_to_buy.append(item)
         # print("🛒 Ingredients you have:", ingredients_you_have)
-
+        
         return jsonify({
             "name": generated_json["recipeName"],
             "ingredients": generated_json["ingredients"],

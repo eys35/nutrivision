@@ -94,7 +94,7 @@ struct ImageLoadView: View {
                 Spacer()
                 if let userData = userData {
                     VStack(alignment: .center, spacing: 4) {
-                        Text("YOUR ALLERGIES:")
+                        Text("Your allergies:")
                             .font(.custom("ChunkFive-Regular", size: 19))
                             .underline()
                         

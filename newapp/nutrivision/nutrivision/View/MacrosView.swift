@@ -22,7 +22,7 @@ struct MacrosView: View {
                 
                 Image("LogoWithBg")
                     .resizable()
-                    .frame(width: 150, height: 37.5)
+                    .frame(width: 300, height: 185)
                     .scaledToFit()
                     .aspectRatio(contentMode: .fit)
                     .padding(.top, 80)
