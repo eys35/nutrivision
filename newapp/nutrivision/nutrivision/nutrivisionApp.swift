@@ -16,6 +16,7 @@ struct nutrivisionApp: App {
                 .foregroundColor(.black)
                 .tint(.accentColor)
                 .preferredColorScheme(.light)
+                .font(.custom("ChunkFive-Regular", size: 18))
         }
     }
 }

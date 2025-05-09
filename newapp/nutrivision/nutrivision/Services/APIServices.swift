@@ -11,8 +11,8 @@ import SwiftUI
 
 
 let LOCALHOST_URL_BASE = "http://127.0.0.1:5000"
-let ENDPOINT_IMAGE_UPLOAD = "/img_upload"
-let ENDPOINT_MODEL = "/model"
+let ENDPOINT_SEGMENT = "/segment_detect"
+let ENDPOINT_RUN_MODEL = "/run_model"
 let URL_NUTRIENTS = "https://api.edamam.com/api/nutrition-data"
 
 
@@ -85,6 +85,7 @@ class APIServices {
     
     func segmentAndDetectIngredients(image: Image, purpose: String, completion: @escaping (Result<[String], Error>) -> Void) {
         // Convert SwiftUI Image to UIImage
+            
             let uiImage = image.asUIImage()
             guard let imageData = uiImage.jpegData(compressionQuality: 0.8),
                   let url = URL(string: "\(LOCALHOST_URL_BASE)/segment_detect") else {
@@ -94,7 +95,7 @@ class APIServices {
 
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
-
+            print("🌐 Sending request to: \(url)")
             let boundary = UUID().uuidString
             request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 
@@ -116,7 +117,11 @@ class APIServices {
             body.append("--\(boundary)--\r\n".data(using: .utf8)!)
             request.httpBody = body
 
-            URLSession.shared.dataTask(with: request) { data, response, error in
+            let config = URLSessionConfiguration.default
+            config.timeoutIntervalForRequest = 200
+            config.timeoutIntervalForResource = 500
+            let session = URLSession(configuration: config)
+            session.dataTask(with: request) { data, response, error in
                 if let error = error {
                     completion(.failure(error))
                     return
@@ -177,7 +182,7 @@ class APIServices {
     
     func runModel(labels: [String], allergies: [String], onSuccess: @escaping (RecipeSuggestion) -> Void) {
         guard let url = URL(string: "\(LOCALHOST_URL_BASE)/run_model") else { return }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -206,7 +211,7 @@ class APIServices {
         debugPrint("Posting")
         let uiImage: UIImage = image.asUIImage()
            
-        var request = URLRequest(url: URL(string: "\(LOCALHOST_URL_BASE)\(ENDPOINT_IMAGE_UPLOAD)")!)
+        var request = URLRequest(url: URL(string: "\(LOCALHOST_URL_BASE)\(ENDPOINT_SEGMENT)")!)
         request.httpMethod = "POST"
 
         // Generate a boundary string for the multi-part form data

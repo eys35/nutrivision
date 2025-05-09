@@ -26,6 +26,7 @@ final class ImageLoadVM: ObservableObject {
             switch result {
             case .success(let ingredients):
                 DispatchQueue.main.async {
+                    self.isReady = true
                     self.detectedIngredients = ingredients
                     print("✅ Segmentation successful. Ingredients: \(ingredients)")
                     

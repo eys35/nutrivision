@@ -10,9 +10,13 @@ final class MacrosVM: ObservableObject {
     @Published var isReady: Bool = false
     @Published var recipeSuggestion: RecipeSuggestion = RecipeSuggestion(
         name: "",
-        ingredientsYouHave: [],
-        ingredientsToBuy: [],
-        userAllergies: []
+        ingredients: [],
+        userAllergies: [],
+        instructions:[],
+        difficulty: "",
+        preparationTime:0,
+        servings: 0
+        
     )
     
     func runModel(labels: [String], userData: UserData) {

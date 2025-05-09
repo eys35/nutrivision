@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C93770742DCD878C00A0D93B /* Untitled.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93770732DCD878900A0D93B /* Untitled.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		C9A91FB02DBAB26B00BE5CD3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,14 +28,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C93770732DCD878900A0D93B /* Untitled.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Untitled.swift; sourceTree = "<group>"; };
 		C9A91FA22DBAB26900BE5CD3 /* nutrivision.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nutrivision.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9A91FAF2DBAB26B00BE5CD3 /* nutrivisionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nutrivisionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9A91FB92DBAB26B00BE5CD3 /* nutrivisionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nutrivisionUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C937706E2DCD85CD00A0D93B /* Exceptions for "nutrivision" folder in "nutrivision" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C9A91FA12DBAB26900BE5CD3 /* nutrivision */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C9A91FA42DBAB26900BE5CD3 /* nutrivision */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C937706E2DCD85CD00A0D93B /* Exceptions for "nutrivision" folder in "nutrivision" target */,
+			);
 			explicitFileTypes = {
 				ContentView.swift = sourcecode.swift;
 			};
@@ -78,6 +96,7 @@
 		C9A91F992DBAB26900BE5CD3 = {
 			isa = PBXGroup;
 			children = (
+				C93770732DCD878900A0D93B /* Untitled.swift */,
 				C9A91FB22DBAB26B00BE5CD3 /* nutrivisionTests */,
 				C9A91FBC2DBAB26B00BE5CD3 /* nutrivisionUITests */,
 				C9A91FA32DBAB26900BE5CD3 /* Products */,
@@ -239,6 +258,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C93770742DCD878C00A0D93B /* Untitled.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +420,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = nutrivision/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -427,6 +448,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = nutrivision/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

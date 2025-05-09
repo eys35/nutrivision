@@ -46,12 +46,16 @@ struct ImageLoadView: View {
                 //view #1: before continuing, has image and continue button
                 Image("LogoWithBg") // dummy image
                     .resizable()
-                    .frame(width: 300, height: 75)
-                    .scaledToFit()
+                    .frame(width:  300, height: 185)
                     .aspectRatio(contentMode: .fit)
                     .padding(.vertical)
-                Text("Your Image:")
-                    .font(.title)
+                    .scaledToFit()
+                Text("Your image is being segmented:")
+                    .font(.custom("ChunkFive-Regular", size: 16))
+                    .padding(.bottom)
+                Text("Press back to select a different image.")
+                    .font(.custom("ChunkFive-Regular", size: 13))
+                    .padding(.bottom)
                 selectedImage
                     .resizable()
                     .cornerRadius(25.0)
@@ -90,8 +94,8 @@ struct ImageLoadView: View {
                 Spacer()
                 if let userData = userData {
                     VStack(alignment: .center, spacing: 4) {
-                        Text("Your allergies:")
-                            .font(.headline)
+                        Text("YOUR ALLERGIES:")
+                            .font(.custom("ChunkFive-Regular", size: 19))
                             .underline()
                         
                         if userData.isAllergicToPeanuts { Text("• Peanuts") }

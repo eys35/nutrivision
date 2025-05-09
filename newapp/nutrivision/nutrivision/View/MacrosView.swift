@@ -31,51 +31,25 @@ struct MacrosView: View {
                 Spacer()
 
                 Text("Loading...")
-                    .font(.title)
+                    .font(.custom("ChunkFive-Regular", size: 28))
                     .padding(.bottom, 64)
                     
-                HStack {
-                    Group {
-                        Image("Apple")
-                            .resizable()
-                            .frame(width: 40, height: 45, alignment: .leading)
-                            .padding(.horizontal)
-                            .padding(.bottom, 64)
-                            .scaleEffect(isBouncing ? 1.2 : 1.0)
-                            .onAppear() {
-                                withAnimation(Animation.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) {
-                                    isBouncing.toggle()
-                                }
-                            }
-                        
-                        Image("Egg")
-                            .resizable()
-                            .frame(width: 40, height: 45, alignment: .center)
-                            .padding(.horizontal)
-                            .padding(.bottom, 64)
-                            .aspectRatio(contentMode: .fit)
-                            .scaleEffect(isBouncing ? 1.2 : 1.0)
-                            .onAppear() {
-                                withAnimation(Animation.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) {
-                                    isBouncing.toggle()
-                                }
-                            }
-                        
-                        Image("Sandwich")
-                            .resizable()
-                            .frame(width: 40, height: 45)
-                            .padding(.horizontal)
-                            .padding(.bottom, 64)
-                            .aspectRatio(contentMode: .fit)
-                            .frame(alignment: Alignment.trailing)
-                            .scaleEffect(isBouncing ? 1.2 : 1.0)
-                            .onAppear() {
-                                withAnimation(Animation.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) {
-                                    isBouncing.toggle()
-                                }
-                            }
+                if !labels.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("🧪 Detected Ingredients:")
+                            .font(.custom("ChunkFive-Regular", size: 20))
+                            .padding(.bottom, 4)
+                        ForEach(labels, id: \.self) { label in
+                            Text("• \(label)")
+                                .font(.custom("ChunkFive-Regular", size: 16))
+                                .scaleEffect(isBouncing ? 1.1 : 1.0)
+                                .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isBouncing)
+                        }
                     }
+                    .padding(.horizontal)
+                    .padding(.bottom, 32)
                 }
+
 //
 //
 //
@@ -87,7 +61,7 @@ struct MacrosView: View {
                             recipe: viewModel.recipeSuggestion,
                             food: viewModel.food_name
                         )
-                        .navigationBarBackButtonHidden(false)
+                        .navigationBarBackButtonHidden(true)
                     ) {
                         Text("CONTINUE")
                             .padding()
@@ -98,6 +72,7 @@ struct MacrosView: View {
                 }
             }.onLoad {
                 viewModel.runModel(labels: labels, userData: userData)
+                isBouncing = true
             }
             
         }
@@ -127,4 +102,3 @@ struct MacrosView_Previews: PreviewProvider {
         )
     }
 }
-

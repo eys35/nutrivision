@@ -8,7 +8,14 @@
 import SwiftUI
 
 struct PastRecipesView: View {
-    let recipes: [RecipeSuggestion]
+    @AppStorage("savedRecipes") private var savedRecipesData: Data = Data()
+    
+    var recipes: [RecipeSuggestion] {
+        if let decoded = try? JSONDecoder().decode([RecipeSuggestion].self, from: savedRecipesData) {
+            return decoded
+        }
+        return []
+    }
 
     var body: some View {
         NavigationView {
@@ -23,21 +30,14 @@ struct PastRecipesView: View {
                             Text(recipe.name)
                                 .font(.headline)
 
-                            if !recipe.ingredientsYouHave.isEmpty {
-                                Text("You had:")
+                            if !recipe.ingredients.isEmpty {
+                                Text("You needed:")
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
-                                Text(recipe.ingredientsYouHave.joined(separator: ", "))
+                                Text(recipe.ingredients.joined(separator: ", "))
                                     .font(.body)
                             }
 
-                            if !recipe.ingredientsToBuy.isEmpty {
-                                Text("Need to buy:")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                                Text(recipe.ingredientsToBuy.joined(separator: ", "))
-                                    .font(.body)
-                            }
 
                             if !recipe.userAllergies.isEmpty {
                                 Text("Avoided (allergies):")

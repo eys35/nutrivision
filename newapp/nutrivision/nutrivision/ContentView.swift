@@ -31,7 +31,6 @@ struct UserData {
     struct ContentView: View {
         @State private var path = NavigationPath()
         @State private var showPastRecipes = false
-        @State private var pastRecipes: [RecipeSuggestion] = []
         @State private var showView : Bool = false
         @State private var showImagePicker: Bool = false
         @State private var image: Image? = nil
@@ -62,6 +61,8 @@ struct UserData {
         var body: some View {
             NavigationStack {
                 VStack {
+                        
+                    
                     Spacer ()
                     Image("LogoWithBg")
                         .resizable()
@@ -71,22 +72,27 @@ struct UserData {
                         .padding(.vertical)
                         .padding(.bottom)
                     Text("Welcome!")
-                        .font(.largeTitle)
+                        .font(.custom("ChunkFive-Regular", size: 30))
                         //.foregroundColor(Color(red:0.3686, green:0.4157, blue:0.4980))
                     
                     Button("Upload from Gallery   ") {
+                        if self.userData == nil {
+                            self.userData = UserData(
+                                age: "N/A", weight: "N/A", height: "N/A", gender: "Unspecified",
+                                isAllergicToPeanuts: false, isAllergicToDairy: false, isAllergicToShellfish: false,
+                                isAllergicToGluten: false, isAllergicToEggs: false, isAllergicToTreeNuts: false,
+                                isAllergicToWheat: false, isAllergicToSoy: false, isAllergicToFish: false
+                            )
+                        }
                         self.showImagePicker = true
                         self.showView = false
                         action = 1
-                        
-                        
-                        
                     }.padding()
                         .background(Color(red:0.44313725490196076, green:0.6745098039215687, blue:0.6039215686274509 ))
                         .foregroundColor(Color.white)
                         .cornerRadius(10)
                         .sheet(isPresented: self.$showImagePicker) {
-                            PhotoCaptureView(showImagePicker: self.$showImagePicker, selectedImage: self.$selectedImage)
+                            PhotoCaptureView(showImagePicker: self.$showImagePicker, selectedImage: self.$selectedImage).navigationBarBackButtonHidden(true)
                         }
                     
                     
@@ -106,7 +112,7 @@ struct UserData {
                             ImageLoadViewWrapper(isShowingImageLoadView: $isShowingImageLoadView, selectedImage: self.selectedImage, macrosVM: MacrosVM())
                         }
                     if let selectedImage = self.selectedImage {
-                        NavigationLink(destination: ImageLoadView(selectedImage: selectedImage, userData: userData, macrosVM: MacrosVM())) {
+                        NavigationLink(destination: ImageLoadView(selectedImage: selectedImage, userData: userData, macrosVM: MacrosVM()).navigationBarBackButtonHidden(true)) {
                                                Image("next")
                                                    .resizable()
                                                    .padding(.top)
@@ -133,7 +139,7 @@ struct UserData {
                         ScrollView {
                             VStack(spacing: 20) {
                                 Spacer(minLength: 10)
-
+                                
                                 Image("Profile")
                                     .resizable()
                                     .scaledToFit()
@@ -232,7 +238,7 @@ struct UserData {
                         }
                     }
                     .sheet(isPresented: $showPastRecipes) {
-                        PastRecipesView(recipes: pastRecipes)
+                        PastRecipesView()
                     }
                 }
                     
