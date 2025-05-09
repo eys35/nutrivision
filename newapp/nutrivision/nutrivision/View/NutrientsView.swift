@@ -23,59 +23,91 @@ struct NutrientsView: View {
     let food: String
     @State private var goHome = false
     @AppStorage("savedRecipes") private var savedRecipesData: Data = Data()
-    
+    @State private var showSavedAlert = false
     
     var body: some View {
         NavigationStack {
             ScrollView {
+                Spacer()
+                Spacer()
+                Spacer()
+                Spacer()
+
+                Text("Your recipe:")
+                    .font(.custom("ChunkFive-Regular", size: 20))
+                Spacer()
+                Spacer()
                 VStack(alignment: .leading, spacing: 20) {
                     Text(recipe.name)
-                        .font(.custom("ChunkFive-Regular", size: 34))
+                        .font(.custom("ChunkFive-Regular", size: 30))
+                        .frame(maxWidth:.infinity, alignment:.center)
                         .bold()
                         .padding(.bottom)
                     Group {
                         Text("🛒 Ingredients")
                             .font(.custom("ChunkFive-Regular", size: 22))
+                            .frame(maxWidth:.infinity, alignment:.center)
                         ForEach(recipe.ingredients, id: \.self) { ingredient in
-                            Text("• \(ingredient)").font(.custom("ChunkFive-Regular", size: 16))
+                            Text("• \(ingredient)")
                         }
                     }
+                    .padding(.horizontal, 40)
+                    Spacer()
+                    
                     Group {
-                        Text("⚠️ Allergies to Avoid")
+                        Text("⚠️ Allergies Avoided")
                             .font(.custom("ChunkFive-Regular", size: 22))
+                            .frame(maxWidth:.infinity, alignment:.center)
+
                         if recipe.userAllergies.isEmpty {
-                            Text("• None 🎉").font(.custom("ChunkFive-Regular", size: 16))
+                            Text("• None 🎉")
                         } else {
                             ForEach(recipe.userAllergies, id: \.self) { allergy in
-                                Text("• \(allergy)").font(.custom("ChunkFive-Regular", size: 16))
+                                Text("• \(allergy)")
                             }
                         }
                     }
-
+                    .padding(.horizontal, 40)
+                    Spacer()
+                    
                     Group {
                         Text("🧑‍🍳 Instructions")
+                            .frame(maxWidth:.infinity, alignment:.center)
                             .font(.custom("ChunkFive-Regular", size: 22))
                         ForEach(Array(recipe.instructions.enumerated()), id: \.offset) { index, step in
-                            Text("\(index + 1). \(step)").font(.custom("ChunkFive-Regular", size: 16))
+                            Text("\(index + 1). \(step)")
                         }
                     }
+                    .padding(.horizontal, 40)
+                    Spacer()
+                    
 
                     Group {
                         Text("📋 Summary")
+                            .frame(maxWidth:.infinity, alignment:.center)
                             .font(.custom("ChunkFive-Regular", size: 22))
-                        Text("Difficulty: \(recipe.difficulty)").font(.custom("ChunkFive-Regular", size: 16))
-                        Text("Preparation Time: \(recipe.preparationTime) minutes").font(.custom("ChunkFive-Regular", size: 16))
-                        Text("Servings: \(recipe.servings)").font(.custom("ChunkFive-Regular", size: 16))
+                        Text("Difficulty: \(recipe.difficulty)")
+                        Text("Preparation Time: \(recipe.preparationTime) minutes")
+                        Text("Servings: \(recipe.servings)")
                     }
+                    .padding(.horizontal, 40)
+                    Spacer()
+                    
+                    Text("Like this recipe? Save it for later!")
+                        .font(.custom("ChunkFive-Regular", size: 18))
+                        .frame(maxWidth:.infinity, alignment:.init(horizontal: .center, vertical: .top))
+                    
                     Button(action: saveCurrentRecipe) {
                         Text("💾 Save Recipe")
-                            .font(.custom("ChunkFive-Regular", size: 16))
+                            .font(.custom("ChunkFive-Regular", size: 25))
                             .foregroundColor(.blue)
+                            .frame(maxWidth: .infinity, alignment:.center )
+                            
                     }
                     Spacer()
                 }
-                .padding(.horizontal, 20)
                 .padding(.top)
+                
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -89,6 +121,9 @@ struct NutrientsView: View {
             .navigationDestination(isPresented: $goHome) {
                 ContentView().navigationBarBackButtonHidden(true)
             }
+            .alert("Saved it!", isPresented: $showSavedAlert) {
+                Button("OK", role: .cancel) { }
+            }
         }
     }
     
@@ -101,23 +136,14 @@ struct NutrientsView: View {
             saved.append(recipe)
             if let encoded = try? JSONEncoder().encode(saved) {
                 savedRecipesData = encoded
+                showSavedAlert = true
             }
+        } else {
+            showSavedAlert = true
         }
     }
     
-    struct NutrientsView_Previews: PreviewProvider {
-        static var previews: some View {
-            NutrientsView(recipe: RecipeSuggestion(
-                name: "Garlic Shrimp Pasta",
-                ingredients: ["Shrimp", "Garlic", "Olive Oil"],
-                userAllergies: ["Dairy", "Gluten"],
-                instructions: ["Boil pasta", "Cook shrimp", "Mix ingredients"],
-                difficulty: "Easy",
-                preparationTime: 30,
-                servings: 4
-            ), food: "Shrimp")
-        }
-    }
+
     //
     //struct NutrientsView: View {
     //
@@ -241,4 +267,17 @@ struct NutrientsView: View {
 //            NutrientsView(food: "Churros")
 //        }
 //    }
+}
+struct NutrientsView_Previews: PreviewProvider {
+    static var previews: some View {
+        NutrientsView(recipe: RecipeSuggestion(
+            name: "Garlic Shrimp Pasta",
+            ingredients: ["Shrimp", "Garlic", "Olive Oil"],
+            userAllergies: ["Dairy", "Gluten"],
+            instructions: ["Boil pasta", "Cook shrimp", "Mix ingredients"],
+            difficulty: "Easy",
+            preparationTime: 30,
+            servings: 4
+        ), food: "Shrimp")
+    }
 }

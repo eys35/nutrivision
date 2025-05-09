@@ -30,18 +30,22 @@ struct MacrosView: View {
                 
                 Spacer()
 
-                Text("Loading...")
+                Text("Finding a recipe...")
                     .font(.custom("ChunkFive-Regular", size: 28))
-                    .padding(.bottom, 64)
+                    .padding(.bottom, 20)
                     
                 if !labels.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("🧪 Detected Ingredients:")
                             .font(.custom("ChunkFive-Regular", size: 20))
                             .padding(.bottom, 4)
-                        ForEach(labels, id: \.self) { label in
+                        ForEach(labels.prefix(7), id: \.self) { label in
                             Text("• \(label)")
-                                .font(.custom("ChunkFive-Regular", size: 16))
+                                .scaleEffect(isBouncing ? 1.1 : 1.0)
+                                .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isBouncing)
+                        }
+                        if labels.count > 7 {
+                            Text("• ...")
                                 .scaleEffect(isBouncing ? 1.1 : 1.0)
                                 .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isBouncing)
                         }
@@ -65,6 +69,7 @@ struct MacrosView: View {
                     ) {
                         Text("CONTINUE")
                             .padding()
+                            .font(.custom("ChunkFive-Regular", size: 18))
                             .background(Color(red: 0.8745098039215686, green: 0.34509803921568627, blue: 0.35294117647058826))
                             .foregroundColor(Color.white)
                             .cornerRadius(10)

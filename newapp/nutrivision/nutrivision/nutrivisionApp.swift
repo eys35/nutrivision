@@ -9,6 +9,13 @@ import SwiftUI
 
 @main
 struct nutrivisionApp: App {
+    init() {
+            let attrs = [
+                NSAttributedString.Key.font: UIFont(name: "ChunkFive-Regular", size: 28)!
+            ]
+            UINavigationBar.appearance().titleTextAttributes = attrs
+        }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -16,7 +23,7 @@ struct nutrivisionApp: App {
                 .foregroundColor(.black)
                 .tint(.accentColor)
                 .preferredColorScheme(.light)
-                .font(.custom("ChunkFive-Regular", size: 18))
+//                .font(.custom("ChunkFive-Regular", size: 18))
         }
     }
 }

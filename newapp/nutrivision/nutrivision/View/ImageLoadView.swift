@@ -66,6 +66,7 @@ struct ImageLoadView: View {
                 NavigationLink(destination: ContentView().navigationBarBackButtonHidden(true)) {
                                  Text("BACK")
                                      .padding()
+                                     .font(.custom("ChunkFive-Regular", size: 18))
                                      .background(Color(red:0.3686, green:0.4157, blue:0.4980))
                                      .foregroundColor(Color.white)
                                      .cornerRadius(10)
@@ -84,6 +85,7 @@ struct ImageLoadView: View {
                         ) {
                             Text("CONTINUE")
                                 .padding()
+                                .font(.custom("ChunkFive-Regular", size: 18))
                                 .background(Color(red: 0.8745, green: 0.3451, blue: 0.3529))
                                 .foregroundColor(.white)
                                 .cornerRadius(10)

@@ -90,6 +90,8 @@ struct UserData {
                     }.padding()
                         .background(Color(red:0.44313725490196076, green:0.6745098039215687, blue:0.6039215686274509 ))
                         .foregroundColor(Color.white)
+                        .font(.custom("ChunkFive-Regular", size: 18))
+
                         .cornerRadius(10)
                         .sheet(isPresented: self.$showImagePicker) {
                             PhotoCaptureView(showImagePicker: self.$showImagePicker, selectedImage: self.$selectedImage).navigationBarBackButtonHidden(true)
@@ -105,6 +107,8 @@ struct UserData {
                         .background(Color(red: 0.8745098039215686, green: 0.34509803921568627, blue: 0.35294117647058826))
                         .foregroundColor(Color.white)
                         .cornerRadius(10)
+                        .font(.custom("ChunkFive-Regular", size: 18))
+
                         .sheet(isPresented: self.$showCamera) {
                             CameraView(selectedImage: self.$selectedImage, isShowingPopup: self.$isShowingPopup)
                         }
@@ -117,7 +121,7 @@ struct UserData {
                                                    .resizable()
                                                    .padding(.top)
                                                    .padding(.top)
-                                                   .frame(width: 130, height: 90)
+                                                   .frame(width: 70, height: 90)
                                                    .scaledToFit()
                                                
                                            }
@@ -131,6 +135,7 @@ struct UserData {
                         Text("Enter User Details")
                     }
                     .padding()
+                    .font(.custom("ChunkFive-Regular", size: 18))
                     .background(Color(red:0.3686, green:0.4157, blue:0.4980))
                     .foregroundColor(.white)
                     .cornerRadius(10)

@@ -7,6 +7,74 @@
 
 import SwiftUI
 
+struct RecipeDetailView: View {
+    let recipe: RecipeSuggestion
+
+    var body: some View {
+        ScrollView {
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+            
+            Text("Your recipe:")
+                .font(.custom("ChunkFive-Regular", size: 20))
+                .padding(.horizontal, 35)
+            Spacer()
+            Spacer()
+            
+            VStack(alignment: .leading, spacing: 20) {
+                Text(recipe.name)
+                    .font(.custom("ChunkFive-Regular", size: 30))
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .bold()
+                    .padding(.bottom)
+                
+                Group {
+                    Text("🛒 Ingredients")
+                        .font(.custom("ChunkFive-Regular", size: 22))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    ForEach(recipe.ingredients, id: \.self) { ingredient in
+                        Text("• \(ingredient)").font(.system(size: 14))
+                    }
+                }
+                .padding(.horizontal, 40)
+                Spacer()
+                
+                Group {
+                    Text("⚠️ Allergies Avoided")
+                        .font(.custom("ChunkFive-Regular", size: 22))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    if recipe.userAllergies.isEmpty {
+                        Text("• None 🎉")
+                            .font(.system(size: 14))
+                    } else {
+                        ForEach(recipe.userAllergies, id: \.self) { allergy in
+                            Text("• \(allergy)")
+                                .font(.system(size: 14))
+                        }
+                    }
+                }
+                .padding(.horizontal, 40)
+                Spacer()
+                
+                Group {
+                    Text("🧑‍🍳 Instructions")
+                        .font(.custom("ChunkFive-Regular", size: 22))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    ForEach(Array(recipe.instructions.enumerated()), id: \.offset) { index, step in
+                        Text("\(index + 1). \(step)")
+                            .font(.system(size: 14))
+                    }
+                }
+                .padding(.horizontal, 40)
+                Spacer()
+            }
+            .padding(.top)
+        }
+    }
+}
+
 struct PastRecipesView: View {
     @AppStorage("savedRecipes") private var savedRecipesData: Data = Data()
     
@@ -21,37 +89,35 @@ struct PastRecipesView: View {
         NavigationView {
             List {
                 if recipes.isEmpty {
-                    Text("No past recipes yet.")
+                    Text("Nothing here")
                         .foregroundColor(.gray)
                         .italic()
                 } else {
                     ForEach(recipes, id: \.name) { recipe in
-                        VStack(alignment: .leading, spacing: 8) {
+                        NavigationLink(destination: RecipeDetailView(recipe: recipe)) {
                             Text(recipe.name)
-                                .font(.headline)
-
-                            if !recipe.ingredients.isEmpty {
-                                Text("You needed:")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                                Text(recipe.ingredients.joined(separator: ", "))
-                                    .font(.body)
-                            }
-
-
-                            if !recipe.userAllergies.isEmpty {
-                                Text("Avoided (allergies):")
-                                    .font(.subheadline)
-                                    .foregroundColor(.red)
-                                Text(recipe.userAllergies.joined(separator: ", "))
-                                    .font(.body)
-                            }
+                                .font(.custom("ChunkFive-Regular", size: 18))
+                                .padding(.vertical, 8)
                         }
-                        .padding(.vertical, 8)
                     }
                 }
             }
-            .navigationTitle("Past Recipes")
+            .navigationTitle("")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    VStack {
+                        Spacer(minLength: 8)
+                        Text("Past Recipes")
+                            .font(.custom("ChunkFive-Regular", size: 35))
+                    }
+                }
+            }
         }
+    }
+}
+
+struct PastRecipesView_Previews: PreviewProvider {
+    static var previews: some View {
+        PastRecipesView()
     }
 }
