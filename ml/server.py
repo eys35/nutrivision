@@ -6,7 +6,8 @@ import io
 import requests
 import json
 import google.generativeai as genai
-LOCAL_API_KEY = "LOCAL_API_KEY"
+LOCAL_API_KEY = "AIzaSyC83mzBWpxdcFKIOtGOwkch6vOrh1_MYmY"
+##AIzaSyC83mzBWpxdcFKIOtGOwkch6vOrh1_MYmY
 genai.configure(api_key=LOCAL_API_KEY)
 app = Flask(__name__)
 

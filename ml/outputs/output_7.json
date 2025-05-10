@@ -1,0 +1,67 @@
+{
+    "request": {
+        "labels": [
+            "coconut oil",
+            "shredded monterey jack cheese",
+            "mayonaise",
+            "green chile",
+            "boneless skinless chicken breasts",
+            "vegetable oil cooking spray",
+            "cilantro leaves",
+            "chopped green bell pepper",
+            "red wine vinegar",
+            "sesame oil"
+        ],
+        "allergies": [
+            "Tree Nuts",
+            "Soy",
+            "Shellfish",
+            "Fish",
+            "Wheat",
+            "Gluten",
+            "Dairy",
+            "Eggs"
+        ]
+    },
+    "response": {
+        "difficulty": "novice",
+        "ingredients": [
+            "1 tablespoon coconut oil",
+            "1 pound boneless, skinless chicken breasts",
+            "1/2 cup shredded monterey jack cheese",
+            "1/4 cup mayonnaise (check for egg-free)",
+            "1/4 cup chopped green chile (canned or fresh)",
+            "1/4 cup chopped cilantro leaves",
+            "1/2 cup chopped green bell pepper",
+            "1 tablespoon red wine vinegar",
+            "1 teaspoon sesame oil",
+            "Vegetable oil cooking spray"
+        ],
+        "instructions": [
+            "Preheat oven to 375\u00b0F (190\u00b0C). Lightly spray a baking dish with vegetable oil cooking spray.",
+            "Melt coconut oil in a skillet over medium-high heat.",
+            "Season chicken breasts with salt and pepper (not included in allergy list).",
+            "Sear chicken breasts in the skillet for 2-3 minutes per side, until lightly browned.  Do not cook through.",
+            "Transfer chicken breasts to the prepared baking dish.",
+            "In a small bowl, combine mayonnaise, green chile, cilantro leaves, and monterey jack cheese.",
+            "Spread the cheese mixture evenly over the seared chicken breasts.",
+            "Bake for 20-25 minutes, or until chicken is cooked through (internal temperature of 165\u00b0F/74\u00b0C) and cheese is melted and bubbly.",
+            "While chicken is baking, prepare the slaw: In a separate bowl, whisk together red wine vinegar and sesame oil. Add chopped green bell pepper and toss to coat.",
+            "Once the chicken is cooked, let it rest for a few minutes before serving. Serve chicken with the cilantro-lime slaw. (Alternatively, the slaw ingredients can be served on the side to allow the consumer to control how much they want)",
+            "Garnish with extra cilantro leaves, if desired."
+        ],
+        "name": "Spicy Green Chile Chicken with Cilantro-Lime Slaw",
+        "preparationTime": 35,
+        "servings": 4,
+        "userAllergies": [
+            "Tree Nuts",
+            "Soy",
+            "Shellfish",
+            "Fish",
+            "Wheat",
+            "Gluten",
+            "Dairy",
+            "Eggs"
+        ]
+    }
+}

@@ -1,0 +1,54 @@
+{
+    "request": {
+        "labels": [
+            "chopped tomatoes",
+            "rice",
+            "shortening",
+            "ground coriander",
+            "spaghetti",
+            "golden raisins",
+            "salt and ground black pepper",
+            "chicken",
+            "refried beans",
+            "bananas"
+        ],
+        "allergies": [
+            "Dairy"
+        ]
+    },
+    "response": {
+        "difficulty": "novice",
+        "ingredients": [
+            "1 pound chicken, cut into bite-sized pieces",
+            "1 cup chopped tomatoes (canned or fresh)",
+            "1 cup rice (long grain recommended)",
+            "2 tablespoons shortening (vegetable shortening)",
+            "1 teaspoon ground coriander",
+            "1/2 cup golden raisins",
+            "Salt to taste",
+            "Ground black pepper to taste",
+            "1/2 cup refried beans (dairy-free, check label)",
+            "1/4 cup chopped banana (for garnish, optional)",
+            "Spaghetti (small amount for an alternative side, optional)"
+        ],
+        "instructions": [
+            "Season the chicken pieces generously with salt and pepper.",
+            "In a large skillet or pot, melt the shortening over medium heat.",
+            "Add the chicken to the skillet and cook until browned on all sides and cooked through (about 8-10 minutes). Remove the chicken from the skillet and set aside.",
+            "Add the chopped tomatoes and ground coriander to the skillet and cook for 3-5 minutes, stirring occasionally, until the tomatoes soften slightly.",
+            "Stir in the rice and cook for 1-2 minutes, stirring constantly, until the rice is lightly toasted.",
+            "Add 2 cups of water to the skillet (or more, according to rice package instructions). Season with salt to taste.",
+            "Bring the mixture to a boil, then reduce the heat to low, cover the skillet, and simmer for 15-20 minutes, or until the rice is cooked and the liquid is absorbed.",
+            "Stir in the cooked chicken and golden raisins.",
+            "Heat up the refried beans in a separate pan or microwave, following package instructions.",
+            "Serve the chicken and rice mixture. Optionally, serve with a small portion of spaghetti. Garnish with chopped banana, if desired.",
+            "Serve a portion of refried beans on the side."
+        ],
+        "name": "Spiced Chicken and Rice with a Sweet Raisin Twist (Dairy-Free)",
+        "preparationTime": 35,
+        "servings": 4,
+        "userAllergies": [
+            "Dairy"
+        ]
+    }
+}

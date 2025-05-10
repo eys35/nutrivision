@@ -1,0 +1,46 @@
+{
+    "request": {
+        "labels": [
+            "roma tomatoes",
+            "chopped fresh chives",
+            "lemon juice",
+            "chopped celery",
+            "oil",
+            "shredded mozzarella cheese",
+            "lemon zest",
+            "large egg whites",
+            "cannellini beans",
+            "dijon mustard"
+        ],
+        "allergies": []
+    },
+    "response": {
+        "difficulty": "novice",
+        "ingredients": [
+            "1 pound Roma tomatoes",
+            "1/4 cup chopped fresh chives",
+            "2 tablespoons lemon juice",
+            "1/2 cup chopped celery",
+            "2 tablespoons oil (olive or your preference)",
+            "1 cup shredded mozzarella cheese",
+            "1 teaspoon lemon zest",
+            "2 large egg whites",
+            "1 (15-ounce) can cannellini beans, rinsed and drained",
+            "1 teaspoon Dijon mustard",
+            "Salt and freshly ground black pepper to taste"
+        ],
+        "instructions": [
+            "Wash and core the Roma tomatoes. Dice them into roughly 1/2-inch pieces.",
+            "In a large bowl, combine the diced tomatoes, chopped chives, lemon juice, chopped celery, oil, shredded mozzarella, lemon zest, and rinsed and drained cannellini beans.",
+            "In a small separate bowl, whisk together the egg whites and Dijon mustard until slightly frothy.",
+            "Gently fold the egg white mixture into the tomato and bean mixture. Be careful not to overmix, you want to keep the egg whites light and airy.",
+            "Season the salad generously with salt and freshly ground black pepper to taste.",
+            "Taste and adjust seasonings as needed. Add more lemon juice for tanginess or salt/pepper to your preference.",
+            "Cover the salad and chill in the refrigerator for at least 30 minutes before serving to allow the flavors to meld."
+        ],
+        "name": "Lemon-Herb Cannellini Bean Salad with Tomato & Mozzarella",
+        "preparationTime": 25,
+        "servings": 4,
+        "userAllergies": []
+    }
+}

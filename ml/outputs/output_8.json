@@ -1,0 +1,59 @@
+{
+    "request": {
+        "labels": [
+            "active dry yeast",
+            "coarse salt",
+            "vegetable oil",
+            "ground cloves",
+            "half & half",
+            "hot sauce",
+            "black pepper",
+            "white wine",
+            "boiling water",
+            "garam masala"
+        ],
+        "allergies": [
+            "Peanuts",
+            "Tree Nuts",
+            "Dairy",
+            "Gluten",
+            "Wheat",
+            "Fish",
+            "Shellfish",
+            "Eggs"
+        ]
+    },
+    "response": {
+        "difficulty": "novice",
+        "ingredients": [
+            "1 teaspoon active dry yeast",
+            "1/2 teaspoon coarse salt",
+            "1 tablespoon vegetable oil",
+            "1/4 teaspoon ground cloves",
+            "1/4 teaspoon black pepper",
+            "1/4 teaspoon garam masala",
+            "1/2 teaspoon hot sauce (adjust to taste)",
+            "1 cup white wine",
+            "4 cups boiling water"
+        ],
+        "instructions": [
+            "In a large, heat-safe bowl or measuring cup, dissolve the active dry yeast in 1/2 cup of the boiling water. Let it sit for 5 minutes to activate.",
+            "Add the remaining boiling water, white wine, vegetable oil, coarse salt, ground cloves, black pepper, garam masala, and hot sauce to the yeast mixture. Stir well to combine.",
+            "Taste the broth and adjust seasonings as needed. Add more hot sauce for extra heat, or more salt and pepper to taste.",
+            "Allow the broth to cool slightly before serving."
+        ],
+        "name": "Spiced Vegetable Broth with a Kick",
+        "preparationTime": 15,
+        "servings": 4,
+        "userAllergies": [
+            "Peanuts",
+            "Tree Nuts",
+            "Dairy",
+            "Gluten",
+            "Wheat",
+            "Fish",
+            "Shellfish",
+            "Eggs"
+        ]
+    }
+}

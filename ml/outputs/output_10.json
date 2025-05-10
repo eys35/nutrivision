@@ -1,0 +1,57 @@
+{
+    "request": {
+        "labels": [
+            "white sugar",
+            "avocado",
+            "purple onion",
+            "lemon",
+            "finely chopped onion",
+            "all-purpose flour",
+            "whole milk",
+            "baby spinach",
+            "lasagna noodles",
+            "ground allspice"
+        ],
+        "allergies": [
+            "Soy",
+            "Gluten"
+        ]
+    },
+    "response": {
+        "difficulty": "intermediate",
+        "ingredients": [
+            "1 package gluten-free lasagna noodles (check for soy in ingredients)",
+            "1 large ripe avocado",
+            "1/4 cup finely chopped purple onion",
+            "2 tablespoons lemon juice",
+            "1/4 cup finely chopped white onion",
+            "1 cup whole milk",
+            "5 cups baby spinach",
+            "1/4 teaspoon ground allspice",
+            "Salt and pepper to taste",
+            "2 tablespoons white sugar"
+        ],
+        "instructions": [
+            "Preheat oven to 375\u00b0F (190\u00b0C).",
+            "Cook lasagna noodles according to package directions, being careful not to overcook. Drain and set aside.",
+            "In a food processor or blender, combine the avocado, purple onion, lemon juice, and a pinch of salt and pepper. Blend until smooth and creamy. This is your avocado filling.",
+            "In a saucepan over medium heat, combine the finely chopped white onion and a tablespoon of water. Cook until softened, about 3-5 minutes. Do not brown.",
+            "Add the whole milk, spinach, allspice, sugar, and salt and pepper to the saucepan. Simmer for 5 minutes, or until the spinach is wilted and the sauce has thickened slightly. Remove from heat. This is your lemon-onion cream sauce.",
+            "Assemble the lasagna: Spread a thin layer of the lemon-onion cream sauce on the bottom of a 9x13 inch baking dish.",
+            "Lay a layer of cooked lasagna noodles over the sauce.",
+            "Spread a layer of the avocado filling over the noodles.",
+            "Pour a layer of the lemon-onion cream sauce over the avocado filling.",
+            "Repeat layers: noodles, avocado filling, lemon-onion cream sauce. End with a layer of lemon-onion cream sauce on top.",
+            "Cover the baking dish with aluminum foil and bake for 25 minutes.",
+            "Remove the foil and bake for an additional 10-15 minutes, or until the lasagna is heated through and the top is lightly bubbly.",
+            "Let the lasagna rest for 10 minutes before slicing and serving."
+        ],
+        "name": "Spinach and Avocado Lasagna with Lemon-Onion Cream Sauce (Soy and Gluten-Free)",
+        "preparationTime": 45,
+        "servings": 6,
+        "userAllergies": [
+            "Soy",
+            "Gluten"
+        ]
+    }
+}

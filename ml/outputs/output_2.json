@@ -1,0 +1,49 @@
+{
+    "request": {
+        "labels": [
+            "dark sesame oil",
+            "ground cinnamon",
+            "juice",
+            "crushed red pepper flakes",
+            "warm water",
+            "cooking spray",
+            "mushrooms",
+            "evaporated milk",
+            "heavy whipping cream",
+            "fresh parsley"
+        ],
+        "allergies": []
+    },
+    "response": {
+        "difficulty": "novice",
+        "ingredients": [
+            "1 tablespoon dark sesame oil",
+            "1 teaspoon ground cinnamon",
+            "1/4 cup juice (apple or white grape recommended)",
+            "1/4 teaspoon crushed red pepper flakes (adjust to taste)",
+            "1 cup warm water",
+            "Cooking spray",
+            "8 ounces mushrooms, sliced",
+            "1/2 cup evaporated milk",
+            "1/2 cup heavy whipping cream",
+            "2 tablespoons fresh parsley, chopped",
+            "8 ounces pasta (any shape, cooked according to package directions)",
+            "Salt and freshly ground black pepper to taste"
+        ],
+        "instructions": [
+            "In a small bowl, whisk together the dark sesame oil, cinnamon, juice, red pepper flakes, and warm water. Set aside.",
+            "Heat a large skillet over medium heat. Lightly coat the skillet with cooking spray.",
+            "Add the sliced mushrooms to the skillet and cook, stirring occasionally, until they soften and release their moisture, about 5-7 minutes. Season with salt and pepper.",
+            "Pour the sesame oil mixture over the mushrooms. Stir and cook for 2 minutes, allowing the flavors to meld.",
+            "Reduce the heat to low. Stir in the evaporated milk and heavy whipping cream.",
+            "Simmer gently for about 5 minutes, stirring occasionally, until the sauce slightly thickens.",
+            "Season the sauce with additional salt and pepper to taste.",
+            "Gently fold in the cooked pasta.",
+            "Garnish with fresh parsley before serving."
+        ],
+        "name": "Creamy Mushroom Pasta with a Hint of Spice",
+        "preparationTime": 25,
+        "servings": 2,
+        "userAllergies": []
+    }
+}

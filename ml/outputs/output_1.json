@@ -1,0 +1,52 @@
+{
+    "request": {
+        "labels": [
+            "ground cinnamon",
+            "onions",
+            "white sugar",
+            "cider vinegar",
+            "chinese five-spice powder",
+            "fresh rosemary",
+            "green beans",
+            "green onions",
+            "black pepper",
+            "cajun seasoning"
+        ],
+        "allergies": [
+            "Soy",
+            "Gluten",
+            "Shellfish"
+        ]
+    },
+    "response": {
+        "difficulty": "novice",
+        "ingredients": [
+            "1 tablespoon ground cinnamon",
+            "1 medium onion, thinly sliced",
+            "1 tablespoon white sugar",
+            "2 tablespoons cider vinegar",
+            "1 teaspoon Chinese five-spice powder",
+            "1 tablespoon fresh rosemary, finely chopped",
+            "1 pound green beans, trimmed",
+            "4 green onions, chopped",
+            "1/2 teaspoon black pepper",
+            "1 teaspoon Cajun seasoning"
+        ],
+        "instructions": [
+            "In a large skillet or wok, heat a small amount of oil (not listed as an ingredient, but necessary for cooking) over medium-high heat.",
+            "Add the sliced onions and cook until softened, about 3-5 minutes. Stir frequently.",
+            "Add the ground cinnamon, white sugar, cider vinegar, Chinese five-spice powder, and black pepper to the skillet. Stir to combine and cook for 1 minute, allowing the spices to bloom.",
+            "Add the green beans and Cajun seasoning to the skillet. Stir-fry for 5-7 minutes, or until the green beans are tender-crisp, stirring frequently.",
+            "Stir in the chopped green onions and fresh rosemary during the last minute of cooking. Cook until the green onions have slightly wilted.",
+            "Taste and adjust seasonings as needed. Serve immediately."
+        ],
+        "name": "Spicy Green Bean Stir-Fry with Savory Herbs",
+        "preparationTime": 20,
+        "servings": 4,
+        "userAllergies": [
+            "Soy",
+            "Gluten",
+            "Shellfish"
+        ]
+    }
+}

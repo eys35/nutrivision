@@ -1,0 +1,61 @@
+{
+    "request": {
+        "labels": [
+            "carrots",
+            "red chili peppers",
+            "hoisin sauce",
+            "paprika",
+            "cumin",
+            "arborio rice",
+            "tortillas",
+            "flank steak",
+            "refried beans",
+            "soy sauce"
+        ],
+        "allergies": [
+            "Shellfish",
+            "Eggs",
+            "Gluten",
+            "Peanuts",
+            "Soy",
+            "Dairy"
+        ]
+    },
+    "response": {
+        "difficulty": "intermediate",
+        "ingredients": [
+            "1 pound flank steak",
+            "1 tablespoon soy sauce (ensure gluten-free)",
+            "1 teaspoon paprika",
+            "1 teaspoon cumin",
+            "1 tablespoon olive oil",
+            "1 cup arborio rice",
+            "2 cups water",
+            "1 cup carrots, peeled and diced",
+            "1-2 red chili peppers, seeded and minced (adjust to spice preference)",
+            "1/4 cup hoisin sauce (ensure gluten-free and soy-free)",
+            "1/2 cup refried beans (ensure gluten-free and soy-free)",
+            "4-6 gluten-free tortillas"
+        ],
+        "instructions": [
+            "Prepare the flank steak: Trim any excess fat from the flank steak. Slice the steak thinly against the grain.",
+            "Marinate the steak: In a bowl, whisk together the soy sauce, paprika, and cumin. Add the sliced steak and toss to coat. Let it marinate for at least 15 minutes while you prepare the other ingredients.",
+            "Cook the arborio rice: Heat the olive oil in a medium saucepan over medium heat. Add the arborio rice and cook for 1-2 minutes, stirring frequently, until the rice is lightly toasted. Add the water and bring to a boil. Reduce the heat to low, cover, and simmer for 18-20 minutes, or until the rice is tender and the water is absorbed. Set aside.",
+            "Saut\u00e9 the carrots and chili peppers: While the rice is cooking, heat a tablespoon of olive oil in a large skillet or wok over medium-high heat. Add the diced carrots and minced chili peppers. Cook for 5-7 minutes, or until the carrots are slightly softened and the peppers are fragrant.",
+            "Cook the beef: Add the marinated flank steak to the skillet with the carrots and peppers. Cook for 2-3 minutes per side, or until the beef is cooked to your desired doneness.",
+            "Prepare the hoisin glaze: In a small bowl, whisk together the hoisin sauce (ensure gluten-free and soy-free).  Set aside.",
+            "Assemble the bowls: Warm the refried beans in a microwave-safe bowl. Warm the tortillas as directed on the package.  To assemble each bowl, start with a base of arborio rice. Top with the refried beans, beef and carrot mixture. Drizzle with the hoisin glaze. Serve with the warm tortillas for wrapping the mixture."
+        ],
+        "name": "Spicy Beef and Carrot Rice Bowls with Hoisin Glaze",
+        "preparationTime": 45,
+        "servings": 4,
+        "userAllergies": [
+            "Shellfish",
+            "Eggs",
+            "Gluten",
+            "Peanuts",
+            "Soy",
+            "Dairy"
+        ]
+    }
+}
